@@ -80,6 +80,273 @@ RT-Linux Kernel (PREEMPT_RT)
     └── Network Management
 ```
 
+## 🏗️ Layered System Architecture
+
+### Real-time CAN Gateway Layers
+```mermaid
+graph TB
+    subgraph "Application Layer"
+        A1[ECU Simulators<br/>Engine, ABS, BCM]
+        A2[Gateway Router<br/>Message Routing]
+        A3[Diagnostic Services<br/>OBD-II, UDS]
+        A4[Safety Monitor<br/>Fault Detection]
+    end
+    
+    subgraph "Protocol Layer"
+        P1[J1939 Stack<br/>SAE J1939 Protocol]
+        P2[UDS Protocol<br/>ISO 14229]
+        P3[OBD-II Services<br/>ISO 15031]
+        P4[Network Management<br/>ISO 11898]
+    end
+    
+    subgraph "CAN Framework Layer"
+        C1[SocketCAN Core<br/>Linux CAN Subsystem]
+        C2[CAN Raw Sockets<br/>Direct CAN Access]
+        C3[CAN BCM<br/>Broadcast Manager]
+        C4[CAN Gateway<br/>Multi-network Bridge]
+    end
+    
+    subgraph "RT Kernel Layer"
+        R1[PREEMPT_RT Kernel<br/>Real-time Linux]
+        R2[High-Res Timers<br/>Nanosecond Precision]
+        R3[RT Scheduler<br/>Priority-based]
+        R4[IRQ Threading<br/>Threaded Interrupts]
+    end
+    
+    subgraph "Driver Layer"
+        D1[MCP251x Driver<br/>SPI CAN Controller]
+        D2[GPIO Driver<br/>Control Signals]
+        D3[SPI Driver<br/>Serial Interface]
+        D4[DMA Engine<br/>Memory Transfer]
+    end
+    
+    subgraph "Hardware Layer"
+        H1[BeagleBone Black<br/>ARM Cortex-A8]
+        H2[MCP2515 x3<br/>CAN Controllers]
+        H3[CAN Transceivers<br/>Physical Layer]
+        H4[Oscilloscope Interface<br/>Signal Analysis]
+    end
+    
+    A1 --> P1
+    A2 --> P2
+    A3 --> P3
+    A4 --> P4
+    P1 --> C1
+    P2 --> C2
+    P3 --> C3
+    P4 --> C4
+    C1 --> R1
+    C2 --> R2
+    C3 --> R3
+    C4 --> R4
+    R1 --> D1
+    R2 --> D2
+    R3 --> D3
+    R4 --> D4
+    D1 --> H1
+    D2 --> H2
+    D3 --> H3
+    D4 --> H4
+```
+
+### Real-time Processing Architecture
+```mermaid
+graph TD
+    subgraph "RT Task Hierarchy"
+        RT1[Safety Monitor<br/>Priority 99]
+        RT2[CAN RX Handler<br/>Priority 95]
+        RT3[ECU Simulation<br/>Priority 90]
+        RT4[Gateway Routing<br/>Priority 85]
+        RT5[Diagnostic Services<br/>Priority 80]
+        RT6[Performance Monitor<br/>Priority 75]
+    end
+    
+    subgraph "Timing Constraints"
+        T1[Safety Response<br/><1ms]
+        T2[CAN Message Processing<br/><5ms]
+        T3[ECU Cycle Time<br/>10ms ±10μs]
+        T4[Gateway Latency<br/><2ms]
+        T5[Diagnostic Response<br/><50ms]
+        T6[Monitoring Cycle<br/>100ms]
+    end
+    
+    subgraph "Memory Management"
+        M1[Real-time Heap<br/>Pre-allocated]
+        M2[Lock-free Queues<br/>Message Passing]
+        M3[Shared Memory<br/>ECU Data]
+        M4[DMA Buffers<br/>CAN Hardware]
+    end
+    
+    subgraph "Synchronization"
+        S1[RT Mutexes<br/>Priority Inheritance]
+        S2[Condition Variables<br/>Event Signaling]
+        S3[Atomic Operations<br/>Lock-free Access]
+        S4[Memory Barriers<br/>Ordering Guarantees]
+    end
+    
+    RT1 --> T1
+    RT2 --> T2
+    RT3 --> T3
+    RT4 --> T4
+    RT5 --> T5
+    RT6 --> T6
+    T1 --> M1
+    T2 --> M2
+    T3 --> M3
+    T4 --> M4
+    M1 --> S1
+    M2 --> S2
+    M3 --> S3
+    M4 --> S4
+```
+
+### CAN Network Topology
+```mermaid
+graph TB
+    subgraph "CAN Gateway Node"
+        GW1[Gateway Router<br/>Multi-network Bridge]
+        GW2[Protocol Translator<br/>J1939 ↔ ISO-TP]
+        GW3[Message Filter<br/>Traffic Control]
+        GW4[Diagnostic Gateway<br/>OBD-II Interface]
+    end
+    
+    subgraph "Engine Network - CAN0"
+        EN1[Engine ECU<br/>ID: 0x7E0]
+        EN2[Transmission ECU<br/>ID: 0x7E1]
+        EN3[Fuel System ECU<br/>ID: 0x7E2]
+        EN4[Exhaust System<br/>ID: 0x7E3]
+    end
+    
+    subgraph "Body Network - CAN1"
+        BN1[Body Control Module<br/>ID: 0x760]
+        BN2[Door Control Units<br/>ID: 0x761-764]
+        BN3[Lighting Control<br/>ID: 0x765]
+        BN4[Climate Control<br/>ID: 0x766]
+    end
+    
+    subgraph "Safety Network - CAN2"
+        SN1[ABS/ESC ECU<br/>ID: 0x740]
+        SN2[Airbag Control<br/>ID: 0x741]
+        SN3[Steering Control<br/>ID: 0x742]
+        SN4[Brake System<br/>ID: 0x743]
+    end
+    
+    subgraph "Diagnostic Interface"
+        DI1[OBD-II Port<br/>Standard Diagnostics]
+        DI2[Service Tool<br/>Manufacturer Specific]
+        DI3[Telematics Unit<br/>Remote Diagnostics]
+    end
+    
+    GW1 --> EN1
+    GW1 --> EN2
+    GW1 --> EN3
+    GW1 --> EN4
+    GW2 --> BN1
+    GW2 --> BN2
+    GW2 --> BN3
+    GW2 --> BN4
+    GW3 --> SN1
+    GW3 --> SN2
+    GW3 --> SN3
+    GW3 --> SN4
+    GW4 --> DI1
+    GW4 --> DI2
+    GW4 --> DI3
+```
+
+### Safety and Fault Management
+```mermaid
+sequenceDiagram
+    participant SM as Safety Monitor
+    participant ECU as ECU Simulator
+    participant GW as Gateway Router
+    participant CAN as CAN Driver
+    participant HW as Hardware
+    
+    Note over SM,HW: Normal Operation
+    ECU->>GW: Cyclic Message
+    GW->>CAN: Route Message
+    CAN->>HW: Transmit CAN Frame
+    HW->>SM: Monitor Signal
+    SM->>SM: Health Check OK
+    
+    Note over SM,HW: Fault Detection
+    ECU->>GW: Message Timeout
+    GW->>SM: Report Missing Message
+    SM->>SM: Fault Analysis
+    
+    alt Critical Fault
+        SM->>ECU: Emergency Stop
+        SM->>GW: Disable Routing
+        SM->>CAN: Error Frame
+        SM->>HW: Safe State
+    else Non-Critical Fault
+        SM->>ECU: Degraded Mode
+        SM->>GW: Limited Routing
+        SM->>CAN: Error Report
+    end
+    
+    Note over SM,HW: Recovery Process
+    SM->>ECU: System Reset
+    ECU->>SM: Self-Test OK
+    SM->>GW: Resume Routing
+    GW->>CAN: Normal Operation
+    CAN->>HW: Resume Traffic
+```
+
+### Performance Monitoring Architecture
+```mermaid
+graph LR
+    subgraph "Measurement Points"
+        MP1[Interrupt Latency<br/>IRQ to Handler]
+        MP2[Task Switch Time<br/>Context Change]
+        MP3[Message Latency<br/>End-to-end]
+        MP4[CAN Bus Load<br/>Bandwidth Usage]
+        MP5[Memory Usage<br/>Heap/Stack]
+        MP6[CPU Utilization<br/>Per-core Load]
+    end
+    
+    subgraph "Analysis Tools"
+        AT1[cyclictest<br/>RT Latency Test]
+        AT2[Ftrace<br/>Kernel Tracing]
+        AT3[perf<br/>Performance Analysis]
+        AT4[candump<br/>CAN Monitoring]
+        AT5[valgrind<br/>Memory Analysis]
+        AT6[htop<br/>System Monitor]
+    end
+    
+    subgraph "Metrics Collection"
+        MC1[Real-time Database<br/>InfluxDB]
+        MC2[Time Series Data<br/>Performance Logs]
+        MC3[Statistical Analysis<br/>Min/Max/Avg]
+        MC4[Threshold Alerts<br/>SLA Monitoring]
+    end
+    
+    subgraph "Visualization"
+        V1[Performance Dashboard<br/>Grafana]
+        V2[Latency Histograms<br/>Distribution Charts]
+        V3[CAN Traffic Analysis<br/>Message Flow]
+        V4[System Health<br/>Status Indicators]
+    end
+    
+    MP1 --> AT1
+    MP2 --> AT2
+    MP3 --> AT3
+    MP4 --> AT4
+    MP5 --> AT5
+    MP6 --> AT6
+    AT1 --> MC1
+    AT2 --> MC2
+    AT3 --> MC3
+    AT4 --> MC4
+    AT5 --> MC1
+    AT6 --> MC2
+    MC1 --> V1
+    MC2 --> V2
+    MC3 --> V3
+    MC4 --> V4
+```
+
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: RT Kernel Setup & CAN Hardware Integration (Week 1-2)

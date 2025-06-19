@@ -90,6 +90,225 @@ meta-infotainment-bsp/          # BSP customization layer
     └── bluetooth/            # Bluetooth audio profiles
 ```
 
+## 🏗️ Layered System Architecture
+
+### Infotainment Platform Layers
+```mermaid
+graph TB
+    subgraph "Application Layer"
+        A1[Infotainment UI<br/>Qt6/QML Interface]
+        A2[Media Player<br/>Audio/Video Control]
+        A3[Navigation App<br/>GPS & Mapping]
+        A4[Vehicle Interface<br/>CAN Data Display]
+    end
+    
+    subgraph "Service Layer"
+        S1[Audio Manager<br/>Sound Routing]
+        S2[Media Service<br/>Playback Control]
+        S3[Navigation Service<br/>Route Planning]
+        S4[Vehicle Data Service<br/>CAN Gateway]
+        S5[Connectivity Manager<br/>Network Control]
+    end
+    
+    subgraph "Middleware Layer"
+        M1[D-Bus System Bus<br/>IPC Communication]
+        M2[GStreamer Pipeline<br/>Multimedia Framework]
+        M3[PulseAudio<br/>Audio Subsystem]
+        M4[ConnMan<br/>Connection Manager]
+        M5[BlueZ<br/>Bluetooth Stack]
+    end
+    
+    subgraph "OS Services Layer"
+        O1[systemd<br/>Service Management]
+        O2[Wayland<br/>Display Server]
+        O3[NetworkManager<br/>Network Services]
+        O4[udev<br/>Device Management]
+    end
+    
+    subgraph "Kernel Layer"
+        K1[Linux Kernel 6.1<br/>RT Extensions]
+        K2[CAN Bus Subsystem<br/>SocketCAN]
+        K3[Audio Subsystem<br/>ALSA/ASoC]
+        K4[Display Drivers<br/>DRM/KMS]
+        K5[Network Stack<br/>TCP/IP, Bluetooth]
+    end
+    
+    subgraph "Hardware Layer"
+        H1[Raspberry Pi 4B<br/>8GB RAM]
+        H2[10" Touch Display<br/>HDMI Interface]
+        H3[USB Audio Interface<br/>High-Quality DAC]
+        H4[CAN Hat<br/>MCP2515 Controller]
+        H5[WiFi/Bluetooth<br/>Dual-band Module]
+    end
+    
+    A1 --> S1
+    A2 --> S2
+    A3 --> S3
+    A4 --> S4
+    S1 --> M1
+    S2 --> M2
+    S3 --> M3
+    S4 --> M4
+    S5 --> M5
+    M1 --> O1
+    M2 --> O2
+    M3 --> O3
+    M4 --> O4
+    M5 --> O1
+    O1 --> K1
+    O2 --> K2
+    O3 --> K3
+    O4 --> K4
+    K1 --> H1
+    K2 --> H2
+    K3 --> H3
+    K4 --> H4
+    K5 --> H5
+```
+
+### Custom Distribution Architecture
+```mermaid
+graph TD
+    subgraph "Custom Distribution - infotainment.conf"
+        D1[Base Configuration<br/>Yocto Poky + Automotive]
+        D2[Feature Set<br/>Multimedia + Connectivity]
+        D3[Security Profile<br/>Hardened Settings]
+        D4[Performance Tuning<br/>RT Kernel + Optimization]
+    end
+    
+    subgraph "Package Groups Hierarchy"
+        P1[automotive-base<br/>Core automotive features]
+        P2[multimedia-full<br/>Audio/Video codecs]
+        P3[connectivity-auto<br/>WiFi/BT/Cellular]
+        P4[security-automotive<br/>Encryption & Auth]
+        P5[development-tools<br/>SDK & Debug tools]
+    end
+    
+    subgraph "Image Variants"
+        I1[infotainment-minimal<br/>Basic functionality]
+        I2[infotainment-full<br/>Complete feature set]
+        I3[infotainment-debug<br/>Development image]
+        I4[infotainment-production<br/>Optimized for deployment]
+    end
+    
+    subgraph "Layer Integration"
+        L1[meta-infotainment<br/>Core platform]
+        L2[meta-multimedia<br/>Media framework]
+        L3[meta-connectivity<br/>Network stack]
+        L4[meta-security<br/>Security features]
+    end
+    
+    D1 --> P1
+    D2 --> P2
+    D3 --> P3
+    D4 --> P4
+    P1 --> I1
+    P2 --> I2
+    P3 --> I3
+    P4 --> I4
+    P5 --> I3
+    L1 --> D1
+    L2 --> D2
+    L3 --> D2
+    L4 --> D3
+```
+
+### Multimedia Processing Pipeline
+```mermaid
+flowchart LR
+    subgraph "Media Sources"
+        MS1[Local Storage<br/>MP3, FLAC, MP4]
+        MS2[USB Devices<br/>Mass Storage]
+        MS3[Bluetooth Audio<br/>A2DP Profile]
+        MS4[Network Streams<br/>Internet Radio]
+        MS5[Vehicle Audio<br/>Engine sounds, Alerts]
+    end
+    
+    subgraph "Input Processing"
+        IP1[Media Scanner<br/>Metadata extraction]
+        IP2[Format Detection<br/>Codec identification]
+        IP3[Quality Assessment<br/>Bitrate analysis]
+    end
+    
+    subgraph "GStreamer Pipeline"
+        GP1[Demuxer<br/>Container parsing]
+        GP2[Decoder<br/>Audio/Video decode]
+        GP3[Effects<br/>EQ, DSP processing]
+        GP4[Mixer<br/>Multi-source mixing]
+        GP5[Encoder<br/>Format conversion]
+    end
+    
+    subgraph "Audio Routing"
+        AR1[PulseAudio Server<br/>Audio management]
+        AR2[Zone Control<br/>Front/Rear speakers]
+        AR3[Priority Handling<br/>Navigation/Media]
+        AR4[Volume Control<br/>Per-source levels]
+    end
+    
+    subgraph "Output Systems"
+        OS1[Speaker System<br/>Multi-channel audio]
+        OS2[Bluetooth Headset<br/>Hands-free calling]
+        OS3[USB Audio<br/>External devices]
+        OS4[HDMI Audio<br/>Display integration]
+    end
+    
+    MS1 --> IP1
+    MS2 --> IP1
+    MS3 --> IP2
+    MS4 --> IP2
+    MS5 --> IP3
+    IP1 --> GP1
+    IP2 --> GP2
+    IP3 --> GP3
+    GP1 --> GP4
+    GP2 --> GP5
+    GP3 --> AR1
+    GP4 --> AR2
+    GP5 --> AR3
+    AR1 --> OS1
+    AR2 --> OS2
+    AR3 --> OS3
+    AR4 --> OS4
+```
+
+### Service Communication Architecture
+```mermaid
+sequenceDiagram
+    participant UI as Infotainment UI
+    participant AM as Audio Manager
+    participant MS as Media Service
+    participant VS as Vehicle Service
+    participant HW as Hardware
+    
+    Note over UI,HW: System Initialization
+    UI->>AM: Initialize Audio System
+    AM->>MS: Register Media Service
+    MS->>VS: Connect Vehicle Interface
+    VS->>HW: Initialize CAN Interface
+    HW->>VS: Vehicle Status Ready
+    VS->>UI: System Ready Signal
+    
+    Note over UI,HW: Media Playback Request
+    UI->>MS: Play Media Request
+    MS->>AM: Request Audio Route
+    AM->>HW: Configure Audio Output
+    MS->>MS: Load Media File
+    MS->>AM: Start Audio Stream
+    AM->>HW: Audio Data Stream
+    HW->>UI: Playback Status Update
+    
+    Note over UI,HW: Vehicle Integration
+    loop Every 100ms
+        VS->>UI: Vehicle Data Update
+        UI->>UI: Update Dashboard
+        alt Navigation Active
+            UI->>AM: Navigation Audio Priority
+            AM->>MS: Reduce Media Volume
+            AM->>HW: Output Navigation Audio
+        end
+    end
+```
+
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Advanced Environment & Distribution Setup (Week 1)

@@ -82,6 +82,188 @@ meta-rpi-automotive/        # BSP customization layer
 - **Build System**: Yocto/Bitbake with custom recipes
 - **Version Control**: Git with proper branching strategy
 
+## 🏗️ Layered System Architecture
+
+### Application Stack Layers
+```mermaid
+graph TB
+    subgraph "Application Layer"
+        A1[AutoDisplay QML App<br/>Dashboard UI]
+        A2[Touch Event Handler<br/>User Interaction]
+        A3[Vehicle Data Controller<br/>Simulation Logic]
+    end
+    
+    subgraph "Framework Layer"
+        F1[Qt5/QML Runtime<br/>UI Framework]
+        F2[Wayland Compositor<br/>Display Management]
+        F3[Event System<br/>Input Processing]
+    end
+    
+    subgraph "System Services Layer"
+        S1[Vehicle Simulator<br/>Data Generation]
+        S2[Display Manager<br/>Screen Control]
+        S3[systemd Services<br/>Process Management]
+    end
+    
+    subgraph "OS Middleware Layer"
+        M1[D-Bus Message Bus<br/>IPC Communication]
+        M2[udev Device Manager<br/>Hardware Events]
+        M3[Kernel Modules<br/>Driver Interface]
+    end
+    
+    subgraph "Linux Kernel Layer"
+        K1[Process Scheduler<br/>Task Management]
+        K2[Memory Manager<br/>Resource Allocation]
+        K3[Device Drivers<br/>Hardware Interface]
+        K4[File Systems<br/>Storage Access]
+    end
+    
+    subgraph "Hardware Layer"
+        H1[Raspberry Pi 4B<br/>ARM Cortex-A72]
+        H2[7" Touch Display<br/>DSI Interface]
+        H3[GPIO Pins<br/>Sensor Interface]
+        H4[Storage & Network<br/>SD Card, WiFi]
+    end
+    
+    A1 --> F1
+    A2 --> F2
+    A3 --> F3
+    F1 --> S1
+    F2 --> S2
+    F3 --> S3
+    S1 --> M1
+    S2 --> M2
+    S3 --> M3
+    M1 --> K1
+    M2 --> K2
+    M3 --> K3
+    K1 --> H1
+    K2 --> H2
+    K3 --> H3
+    K4 --> H4
+```
+
+### Yocto Build System Architecture
+```mermaid
+graph TD
+    subgraph "Development Environment"
+        D1[Host Ubuntu 22.04<br/>Development Machine]
+        D2[Yocto Workspace<br/>Build Directory]
+        D3[Shared State Cache<br/>Build Artifacts]
+    end
+    
+    subgraph "Layer Stack Hierarchy"
+        L1[poky<br/>Base Yocto Layer]
+        L2[meta-openembedded<br/>Extended Packages]
+        L3[meta-raspberrypi<br/>BSP Layer]
+        L4[meta-qt5<br/>Qt Framework]
+        L5[meta-autodisplay<br/>Custom Automotive Layer]
+    end
+    
+    subgraph "Build Process Pipeline"
+        B1[Recipe Parsing<br/>Configuration Analysis]
+        B2[Task Scheduling<br/>Dependency Resolution]
+        B3[Source Fetching<br/>Code Download]
+        B4[Cross Compilation<br/>ARM64 Build]
+        B5[Package Assembly<br/>RPM/DEB Creation]
+        B6[Root Filesystem<br/>System Integration]
+        B7[Image Generation<br/>Bootable Media]
+    end
+    
+    subgraph "Output Artifacts"
+        O1[autodisplay-image.wic<br/>Disk Image]
+        O2[Package Repository<br/>Custom Packages]
+        O3[SDK Installer<br/>Development Tools]
+        O4[Boot Files<br/>Kernel & Bootloader]
+    end
+    
+    D1 --> D2
+    D2 --> D3
+    L1 --> B1
+    L2 --> B1
+    L3 --> B1
+    L4 --> B1
+    L5 --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 --> B4
+    B4 --> B5
+    B5 --> B6
+    B6 --> B7
+    B7 --> O1
+    B7 --> O2
+    B7 --> O3
+    B7 --> O4
+```
+
+### Runtime Data Flow Architecture
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant T as Touch Screen
+    participant A as QML App
+    participant S as Vehicle Simulator
+    participant D as Display Manager
+    participant H as Hardware
+    
+    Note over U,H: System Boot Sequence
+    H->>D: Hardware Initialize
+    D->>A: Start QML Application
+    A->>S: Initialize Vehicle Simulator
+    S->>A: Send Initial Vehicle Data
+    A->>D: Render Dashboard UI
+    D->>H: Display Output
+    
+    Note over U,H: User Interaction Loop
+    U->>T: Touch Event
+    T->>A: Touch Coordinates
+    A->>A: Process UI Event
+    A->>D: Update Display
+    D->>H: Screen Refresh
+    
+    Note over U,H: Real-time Data Updates
+    loop Every 1000ms
+        S->>A: Vehicle Data Update
+        A->>A: Update Data Model
+        A->>D: Refresh UI Elements
+        D->>H: Display Changes
+    end
+```
+
+### Custom Layer Integration
+```mermaid
+graph LR
+    subgraph "meta-autodisplay Layer"
+        C1[recipes-automotive/<br/>Display Apps]
+        C2[recipes-core/<br/>Custom Images]
+        C3[recipes-graphics/<br/>UI Components]
+        C4[conf/<br/>Layer Config]
+    end
+    
+    subgraph "Integration Points"
+        I1[Qt5 Framework<br/>UI Development]
+        I2[Wayland Compositor<br/>Display Management]
+        I3[systemd Services<br/>Process Control]
+        I4[Device Tree<br/>Hardware Config]
+    end
+    
+    subgraph "Target System"
+        T1[Automotive Dashboard<br/>Running Application]
+        T2[Touch Interface<br/>User Interaction]
+        T3[Vehicle Data<br/>Simulation Engine]
+        T4[System Monitoring<br/>Health Checks]
+    end
+    
+    C1 --> I1
+    C2 --> I2
+    C3 --> I3
+    C4 --> I4
+    I1 --> T1
+    I2 --> T2
+    I3 --> T3
+    I4 --> T4
+```
+
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Environment Setup (Week 1, Days 1-3)

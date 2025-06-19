@@ -4,7 +4,7 @@
 [![Yocto Project](https://img.shields.io/badge/Yocto-Project-blue?logo=yoctoproject)](https://www.yoctoproject.org/)
 [![Embedded Linux](https://img.shields.io/badge/Embedded-Linux-green?logo=linux)](https://www.kernel.org/)
 [![Automotive](https://img.shields.io/badge/Industry-Automotive-red?logo=tesla)](https://www.autosar.org/)
-[![Portfolio](https://img.shields.io/badge/Status-Portfolio-gold?logo=github)](https://github.com)
+[![Portfolio](https://img.shields.io/badge/Status-Portfolio-gold?logo=github)](https://github.com/AbdullahAbdelhakeem6484/EmbeddedLinux-automotive-portfolio.git)
 
 > **Professional portfolio demonstrating expertise in Embedded Linux and Yocto Project development with automotive industry applications**
 
@@ -52,14 +52,32 @@ graph TB
     J --> K[Automotive Career Ready]
 ```
 
-### 🎥 Video Demonstrations
+### 🎥 Video Demonstrations *(Coming Soon)*
 
-Each project includes comprehensive video documentation:
-- **Technical Architecture Deep-dive**
-- **Live System Demonstrations**
-- **Code Walkthrough & Explanations**
-- **Industry Applications & Use Cases**
-- **Performance Analysis & Optimization**
+Each project will include comprehensive video documentation on [YouTube](https://youtube.com/@AbdullahAbdelhakeem-EmbeddedLinux):
+
+#### 📺 Planned Video Series:
+1. **AutoDisplay-Yocto Demo** (15-20 mins)
+   - Yocto build process walkthrough
+   - Qt5/QML dashboard demonstration
+   - Hardware setup and debugging
+
+2. **InfuTainment-Platform Deep-dive** (25-30 mins)
+   - Custom distribution creation
+   - Multimedia pipeline in action
+   - D-Bus services integration
+
+3. **CAN-RT-Gateway Technical Demo** (20-25 mins)
+   - Real-time system validation
+   - CAN bus simulation demonstration
+   - Performance analysis with oscilloscope
+
+4. **AV-Edge-Fusion Platform Tour** (30-35 mins)
+   - AI/ML inference pipeline
+   - Multi-sensor fusion demonstration
+   - Safety systems in action
+
+**Subscribe for notifications when videos go live!** 🔔
 
 ### 📊 Portfolio Metrics
 
@@ -111,8 +129,8 @@ Based on current automotive embedded job postings, this portfolio covers:
 
 1. **Clone the Portfolio**
    ```bash
-   git clone https://github.com/[username]/embedded-linux-automotive-portfolio
-   cd embedded-linux-automotive-portfolio
+   git clone https://github.com/AbdullahAbdelhakeem6484/EmbeddedLinux-automotive-portfolio.git
+   cd EmbeddedLinux-automotive-portfolio
    ```
 
 2. **Start with Beginner Project**
@@ -129,10 +147,10 @@ Based on current automotive embedded job postings, this portfolio covers:
 ## 📞 Professional Contact
 
 **Embedded Linux & Automotive Systems Engineer**
-- 🔗 **LinkedIn**: [Connect for automotive embedded opportunities]
-- 🐙 **GitHub**: [View complete project implementations]
-- 📧 **Email**: [Professional contact for collaboration]
-- 🎥 **YouTube**: [Technical deep-dive videos and tutorials]
+- 🔗 **LinkedIn**: [Abdullah Abdelhakeem](https://www.linkedin.com/in/abdullah-abdelhakeem-3b5338116/)
+- 🐙 **GitHub**: [EmbeddedLinux Automotive Portfolio](https://github.com/AbdullahAbdelhakeem6484/EmbeddedLinux-automotive-portfolio)
+- 📧 **Email**: abdullah.abdelhakeem25@gmail.com
+- 🎥 **YouTube**: [Technical Deep-Dive Videos](https://www.youtube.com/@abdullahabdelhakeem2092/playlists) *(Coming Soon)*
 
 ---
 
